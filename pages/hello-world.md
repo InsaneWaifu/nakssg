@@ -1,5 +1,5 @@
 ---
-title: "Hello, World!"
+title: Hello, World!
 timestamp: Wed, 23 Oct 2024 20:02:16 +0000
 ---
 
