@@ -1,6 +1,11 @@
 use quote::{quote, quote_spanned};
 use syn::{
-    braced, bracketed, parenthesized, parse::{Parse, Parser}, punctuated::Punctuated, spanned::Spanned, token::Brace, Block, Expr, Ident, LitStr, Path, Stmt, Token
+    braced, bracketed, parenthesized,
+    parse::{Parse, Parser},
+    punctuated::Punctuated,
+    spanned::Spanned,
+    token::Brace,
+    Block, Expr, Ident, LitStr, Path, Stmt, Token,
 };
 
 enum HtmlAttribute {
@@ -51,7 +56,7 @@ enum HtmlAstElem {
     },
     Text(LitStr),
     Expression(Expr),
-    Code(Vec<Stmt>)
+    Code(Vec<Stmt>),
 }
 
 impl Parse for HtmlAstElem {
@@ -90,7 +95,7 @@ impl Parse for HtmlAstElem {
             } else {
                 Punctuated::new()
             };
-            
+
             let p_children;
             braced!(p_children in input);
             children = Punctuated::<HtmlAstElem, Token![,]>::parse_terminated(&p_children)?;
@@ -98,7 +103,7 @@ impl Parse for HtmlAstElem {
             attributes = Punctuated::new();
             children = Punctuated::new();
         }
-        
+
         if is_fragment {
             Ok(HtmlAstElem::Fragment {
                 name,
@@ -133,7 +138,7 @@ pub fn nakssg_html(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         .parse(input)
         .map(|x| x.into_iter().map(generate_html));
     if let Err(err) = html_tree {
-        return proc_macro::TokenStream::from(err.to_compile_error())
+        return proc_macro::TokenStream::from(err.to_compile_error());
     }
     let html_tree = html_tree.unwrap();
     quote! {
@@ -206,10 +211,7 @@ fn generate_html(elem: HtmlAstElem) -> proc_macro2::TokenStream {
             attributes,
         } => {
             let attributes_list = generate_attributes_list(attributes);
-            let children = children
-                .into_iter()
-                .map(generate_html)
-                .collect::<Vec<_>>();
+            let children = children.into_iter().map(generate_html).collect::<Vec<_>>();
             quote! {
                 {
                     (::nakssg::ToHtml::to_html(#name (
@@ -227,10 +229,7 @@ fn generate_html(elem: HtmlAstElem) -> proc_macro2::TokenStream {
             single_tag,
         } => {
             let attributes_list = generate_attributes_list(attributes);
-            let children = children
-                .into_iter()
-                .map(generate_html)
-                .collect::<Vec<_>>();
+            let children = children.into_iter().map(generate_html).collect::<Vec<_>>();
             quote! {
 
                     writer.write_tag(stringify!(#name), #single_tag, {

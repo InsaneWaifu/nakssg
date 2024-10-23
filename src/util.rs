@@ -5,15 +5,13 @@ use crate::{html::Attribute, HtmlWriter, ToHtml};
 #[allow(non_snake_case)]
 pub fn Doctype(attrs: Vec<Attribute>, _children: impl Fn(&mut dyn HtmlWriter)) -> impl ToHtml {
     assert!(attrs.is_empty());
-    nakssg_html!(
-        r#"<!DOCTYPE html>"#
-    )
+    nakssg_html!(r#"<!DOCTYPE html>"#)
 }
 
 #[allow(non_snake_case)]
 pub fn HeadDefault(attrs: Vec<Attribute>, _children: impl Fn(&mut dyn HtmlWriter)) -> impl ToHtml {
     assert!(attrs.is_empty());
-    nakssg_html!{
+    nakssg_html! {
         r#"<meta charset="utf-8" />"#,
         r#"<link rel="stylesheet" href="https://unpkg.com/normalize.css@7.0.0/normalize.css" type="text/css" />"#,
         r#"<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.5.0/css/sakura-pink.css" type="text/css" />"#,

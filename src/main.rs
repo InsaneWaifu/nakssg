@@ -7,10 +7,7 @@ use blog::BlogPageBase;
 use chrono::{DateTime, FixedOffset};
 use clap::{Parser, Subcommand};
 use comrak::Options;
-use nakssg::{
-    nakssg_html,
-    util::html_to_string,
-};
+use nakssg::{nakssg_html, util::html_to_string};
 mod blog;
 
 #[derive(Debug)]
@@ -111,27 +108,31 @@ impl Command {
                     .filter(|x| x.is_file() && x.extension().unwrap() == "md")
                     .map(Page::load)
                     .collect::<Vec<_>>();
-                
+
                 std::fs::create_dir_all(output_dir).unwrap();
 
                 let pages2 = &pages;
                 let index = html_to_string(nakssg_html! {
                     !{let pages = pages2;},
                     !BlogPageBase(title: {Some("Blog")}) {
-                        {
-                            pages.iter().map(|page| {
-                                Box::new(nakssg_html!(
-                                    a(href: {Some(format!("/{}", page.slug))}) {
-                                        {page.title.as_str()},
-                                        sub {
-                                            !{let timestamp = page.timestamp.to_rfc2822();},
-                                            time(datetime: {Some(&timestamp)}) {
-                                                {timestamp}
+                        ul(style: "list-style-type:none;") {
+                            {
+                                pages.iter().map(|page| {
+                                    Box::new(nakssg_html!(
+                                        li {
+                                            a(href: {Some(format!("/{}", page.slug))}) {
+                                                {page.title.as_str()},
+                                                sub {
+                                                    !{let timestamp = page.timestamp.to_rfc2822();},
+                                                    time(datetime: {Some(&timestamp)}) {
+                                                        {timestamp}
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
-                                )) as Box<dyn Fn(&mut dyn nakssg::HtmlWriter)>
-                            }).collect::<Vec<Box<dyn Fn(&mut dyn nakssg::HtmlWriter)>>>()
+                                    )) as Box<dyn Fn(&mut dyn nakssg::HtmlWriter)>
+                                }).collect::<Vec<Box<dyn Fn(&mut dyn nakssg::HtmlWriter)>>>()
+                            }
                         }
                     }
                 });
@@ -143,7 +144,8 @@ impl Command {
                             {page.body.as_str()}
                         }
                     });
-                    std::fs::write(output_dir.join(page.slug).with_extension("html"), html).unwrap();
+                    std::fs::write(output_dir.join(page.slug).with_extension("html"), html)
+                        .unwrap();
                 }
             }
         }

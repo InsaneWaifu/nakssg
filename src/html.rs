@@ -1,6 +1,5 @@
 use std::fmt::Write;
 
-
 pub type Attribute = (String, Option<String>);
 
 pub trait HtmlWriter {
@@ -34,7 +33,9 @@ impl ToHtml for String {
 }
 
 impl<T> ToHtml for Vec<T>
-where T: Fn(&mut dyn HtmlWriter) {
+where
+    T: Fn(&mut dyn HtmlWriter),
+{
     fn to_html(self, writer: &mut dyn HtmlWriter) {
         for el in self {
             el(writer)
@@ -44,7 +45,9 @@ where T: Fn(&mut dyn HtmlWriter) {
 
 impl<T: ToHtml> ToHtml for Option<T> {
     fn to_html(self, writer: &mut dyn HtmlWriter) {
-        if let Some(x) = self { x.to_html(writer) }
+        if let Some(x) = self {
+            x.to_html(writer)
+        }
     }
 }
 
@@ -83,4 +86,3 @@ impl<T: Write> HtmlWriter for WriteHtml<T> {
         writeln!(self.writer, "{lit}").unwrap()
     }
 }
-
