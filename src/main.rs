@@ -96,7 +96,7 @@ impl Command {
                 let file = std::fs::File::create(path).expect("Could not create file");
                 let mut writer = std::io::BufWriter::new(file);
                 writeln!(writer, "---").unwrap();
-                writeln!(writer, "title: \"{}\"", slug_name).unwrap();
+                writeln!(writer, "title: {}", slug_name).unwrap();
                 writeln!(writer, "timestamp: {}", chrono::Utc::now().to_rfc2822()).unwrap();
                 writeln!(writer, "---").unwrap();
             }
