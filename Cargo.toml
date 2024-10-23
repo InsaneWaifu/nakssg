@@ -1,0 +1,17 @@
+[package]
+name = "nakssg"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.38"
+clap = "4.5.20"
+comrak = "0.29.0"
+nakssg_macro = {path = "./nakssg_macro"}
+
+
+[workspace]
+
+members = [
+    "nakssg_macro",
+]
