@@ -56,6 +56,7 @@ impl Page {
         options.extension.table = true;
         options.extension.underline = true;
         options.extension.greentext = true;
+        options.render.unsafe_ = true; // Allow html
         let body = comrak::markdown_to_html(&remaining, &options);
         Self {
             title: title.unwrap(),
