@@ -24,6 +24,28 @@ nav {
   display: flex;
   justify-content: space-between;
 }
+
+aside {
+  width: 40%;
+  padding-left: 0.5rem;
+  margin-left: 0.5rem;
+  float: right;
+  box-shadow: inset 5px 0 5px -5px #49002d;
+  font-style: italic;
+  color: #49002d;
+}
+
+@media (min-width: calc(38em * 2.2)) {
+  aside {
+    float: none; /* Disable floating */
+    position: absolute; /* Take it out of the document flow */
+    right: -40%;
+    width: calc(38em * 0.4);
+  }
+  body {
+    position: relative;
+  }
+}
                     "#
                 },
             },

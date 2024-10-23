@@ -102,14 +102,16 @@ impl Command {
                 let output_dir = Path::new(&output_dir);
                 std::fs::create_dir_all(output_dir).unwrap();
                 let input_dir = Path::new(&self.input_dir);
+                let static_dir = input_dir.join("static");
+                let output_static_dir = output_dir.join("static");
+                std::fs::create_dir_all(&static_dir).unwrap();
+                std::fs::create_dir_all(&output_static_dir).unwrap();
                 let pages = std::fs::read_dir(input_dir)
                     .unwrap()
                     .map(|x| x.unwrap().path())
                     .filter(|x| x.is_file() && x.extension().unwrap() == "md")
                     .map(Page::load)
                     .collect::<Vec<_>>();
-
-                std::fs::create_dir_all(output_dir).unwrap();
 
                 let pages2 = &pages;
                 let index = html_to_string(nakssg_html! {
@@ -147,7 +149,23 @@ impl Command {
                     std::fs::write(output_dir.join(page.slug).with_extension("html"), html)
                         .unwrap();
                 }
+
+                copy_static_content(static_dir, output_static_dir);
             }
+        }
+    }
+}
+
+fn copy_static_content(src: impl AsRef<Path>, dst: impl AsRef<Path>) {
+    for entry in std::fs::read_dir(src).unwrap() {
+        let entry = entry.unwrap();
+        let src_path = entry.path();
+        let dst_path = dst.as_ref().join(src_path.file_name().unwrap());
+        if src_path.is_dir() {
+            std::fs::create_dir_all(&dst_path).unwrap();
+            copy_static_content(&src_path, &dst_path);
+        } else {
+            std::fs::copy(&src_path, &dst_path).unwrap();
         }
     }
 }
