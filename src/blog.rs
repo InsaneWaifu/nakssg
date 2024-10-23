@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-use chrono::DateTime;
 use nakssg::util::{Doctype, HeadDefault};
 use nakssg::{html::Attribute, ToHtml};
 use nakssg::{nakssg_html, HtmlWriter};
@@ -51,15 +50,11 @@ nav {
                     h1 {
                         {title.as_str()}
                     },
-                    {if let Some(timestamp) = timestamp.as_ref() {
-                        Some(nakssg_html! {
+                    {timestamp.as_ref().map(|timestamp| nakssg_html! {
                             time(datetime: {Some(timestamp.as_str())}) {
                                 {timestamp.as_str()}
                             },
-                        })
-                    } else {
-                        None
-                    }},
+                        })},
 
                     {children}
                 },

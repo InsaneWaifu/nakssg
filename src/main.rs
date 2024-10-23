@@ -1,7 +1,6 @@
 use std::{
     io::{BufRead, Write},
-    path::{Path, PathBuf},
-    str::FromStr,
+    path::Path,
 };
 
 use blog::BlogPageBase;
@@ -9,8 +8,8 @@ use chrono::{DateTime, FixedOffset};
 use clap::{Parser, Subcommand};
 use comrak::Options;
 use nakssg::{
-    html, nakssg_html,
-    util::{html_to_string, Doctype, HeadDefault},
+    nakssg_html,
+    util::html_to_string,
 };
 mod blog;
 
@@ -32,7 +31,7 @@ impl Page {
         let mut timestamp = None;
         {
             assert!(lines.next().unwrap().unwrap() == "---");
-            while let Some(line) = lines.next() {
+            for line in lines.by_ref() {
                 let line = line.unwrap();
                 if line == "---" {
                     break;
@@ -62,7 +61,7 @@ impl Page {
             title: title.unwrap(),
             timestamp: timestamp.unwrap().unwrap(),
             slug: slug.to_str().unwrap().to_string(),
-            body: body,
+            body,
         }
     }
 }

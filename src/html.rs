@@ -44,10 +44,7 @@ where T: Fn(&mut dyn HtmlWriter) {
 
 impl<T: ToHtml> ToHtml for Option<T> {
     fn to_html(self, writer: &mut dyn HtmlWriter) {
-        match self {
-            Some(x) => x.to_html(writer),
-            None => {}
-        }
+        if let Some(x) = self { x.to_html(writer) }
     }
 }
 

@@ -3,7 +3,7 @@ use nakssg::nakssg_html;
 use crate::{html::Attribute, HtmlWriter, ToHtml};
 
 #[allow(non_snake_case)]
-pub fn Doctype(attrs: Vec<Attribute>, children: impl Fn(&mut dyn HtmlWriter)) -> impl ToHtml {
+pub fn Doctype(attrs: Vec<Attribute>, _children: impl Fn(&mut dyn HtmlWriter)) -> impl ToHtml {
     assert!(attrs.is_empty());
     nakssg_html!(
         r#"<!DOCTYPE html>"#
@@ -11,7 +11,7 @@ pub fn Doctype(attrs: Vec<Attribute>, children: impl Fn(&mut dyn HtmlWriter)) ->
 }
 
 #[allow(non_snake_case)]
-pub fn HeadDefault(attrs: Vec<Attribute>, children: impl Fn(&mut dyn HtmlWriter)) -> impl ToHtml {
+pub fn HeadDefault(attrs: Vec<Attribute>, _children: impl Fn(&mut dyn HtmlWriter)) -> impl ToHtml {
     assert!(attrs.is_empty());
     nakssg_html!{
         r#"<meta charset="utf-8" />"#,

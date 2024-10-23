@@ -131,7 +131,7 @@ impl Parse for HtmlAstElem {
 pub fn nakssg_html(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let html_tree = Punctuated::<HtmlAstElem, Token![,]>::parse_terminated
         .parse(input)
-        .map(|x| x.into_iter().map(|x| generate_html(x)));
+        .map(|x| x.into_iter().map(generate_html));
     if let Err(err) = html_tree {
         return proc_macro::TokenStream::from(err.to_compile_error())
     }
@@ -208,7 +208,7 @@ fn generate_html(elem: HtmlAstElem) -> proc_macro2::TokenStream {
             let attributes_list = generate_attributes_list(attributes);
             let children = children
                 .into_iter()
-                .map(|x| generate_html(x))
+                .map(generate_html)
                 .collect::<Vec<_>>();
             quote! {
                 {
@@ -229,7 +229,7 @@ fn generate_html(elem: HtmlAstElem) -> proc_macro2::TokenStream {
             let attributes_list = generate_attributes_list(attributes);
             let children = children
                 .into_iter()
-                .map(|x| generate_html(x))
+                .map(generate_html)
                 .collect::<Vec<_>>();
             quote! {
 
