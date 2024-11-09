@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use nakssg::util::{Doctype, HeadDefault};
-use nakssg::{html::Attribute, ToHtml};
-use nakssg::{nakssg_html, HtmlWriter};
+use trowel::util::{Doctype, HeadDefault};
+use trowel::{html::Attribute, ToHtml};
+use trowel::{trowel_html, HtmlWriter};
 
 #[allow(non_snake_case)]
 pub fn BlogPageBase(attrs: Vec<Attribute>, children: impl Fn(&mut dyn HtmlWriter)) -> impl ToHtml {
@@ -10,7 +10,7 @@ pub fn BlogPageBase(attrs: Vec<Attribute>, children: impl Fn(&mut dyn HtmlWriter
     let title = attrs.remove("title").expect("No title").unwrap();
     let timestamp = attrs.remove("timestamp").flatten();
 
-    nakssg_html! {
+    trowel_html! { move
         <!Doctype,
         html {
             head {
@@ -57,8 +57,8 @@ aside {
                         },
                         div {
                             {
-                                vec![("/", "Home"), ("/about", "About")].into_iter().map(|x|
-                                    nakssg_html!{
+                                vec![("/", "Home"), ("/about", "Bbout")].into_iter().map(|x|
+                                    trowel_html!{ move
                                         a(href: {Some(x.0.to_string())}) {
                                             {x.1}
                                         }
@@ -72,7 +72,7 @@ aside {
                     h1 {
                         {title.as_str()}
                     },
-                    {timestamp.as_ref().map(|timestamp| nakssg_html! {
+                    {timestamp.as_ref().map(|timestamp| trowel_html! {
                             time(datetime: {Some(timestamp.as_str())}) {
                                 {timestamp.as_str()}
                             },

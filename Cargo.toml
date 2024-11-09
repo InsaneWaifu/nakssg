@@ -7,11 +7,10 @@ edition = "2021"
 chrono = "0.4.38"
 clap = "4.5.20"
 comrak = "0.29.0"
-nakssg_macro = {path = "./nakssg_macro"}
-
+trowel = {path = "trowel"}
 
 [workspace]
 
 members = [
-    "nakssg_macro",
+    "trowel_macro", "trowel",
 ]

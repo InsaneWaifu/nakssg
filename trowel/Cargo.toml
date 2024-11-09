@@ -1,0 +1,7 @@
+[package]
+name = "trowel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+trowel_macro = {path = "../trowel_macro"}

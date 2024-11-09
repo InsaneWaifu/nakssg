@@ -1,7 +1,9 @@
+use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{
     braced, bracketed, parenthesized,
-    parse::{Parse, Parser},
+    parse::{self, Parse, Parser},
+    parse2,
     punctuated::Punctuated,
     spanned::Spanned,
     token::Brace,
@@ -133,17 +135,23 @@ impl Parse for HtmlAstElem {
 }
 
 #[proc_macro]
-pub fn nakssg_html(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let html_tree = Punctuated::<HtmlAstElem, Token![,]>::parse_terminated
-        .parse(input)
-        .map(|x| x.into_iter().map(generate_html));
-    if let Err(err) = html_tree {
-        return proc_macro::TokenStream::from(err.to_compile_error());
+pub fn trowel_html(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    struct HtmlMacroInput {
+        move_token: Option<Token![move]>,
+        tree: Vec<proc_macro2::TokenStream>,
     }
-    let html_tree = html_tree.unwrap();
+    impl Parse for HtmlMacroInput {
+        fn parse(input: parse::ParseStream) -> parse::Result<Self> {
+            let move_token = input.parse::<Option<Token![move]>>()?;
+            let tree = Punctuated::<HtmlAstElem, Token![,]>::parse_terminated(input)
+                .map(|x| x.into_iter().map(generate_html))?.collect();
+            Ok(HtmlMacroInput { move_token, tree })
+        }
+    }
+    let HtmlMacroInput { move_token, tree } = syn::parse::<HtmlMacroInput>(input).unwrap();
     quote! {
-        move |writer: &mut dyn (::nakssg::HtmlWriter)| {
-            #(#html_tree);*
+        #move_token |writer: &mut dyn (::trowel::HtmlWriter)| {
+            #(#tree);*
         }
     }
     .into()
@@ -153,7 +161,7 @@ fn html_expr(expr: Expr) -> proc_macro2::TokenStream {
     quote_spanned! {
         expr.span() =>
         {
-            (::nakssg::ToHtml::to_html(#expr, writer));
+            (::trowel::ToHtml::to_html(#expr, writer));
         }
     }
 }
@@ -214,8 +222,8 @@ fn generate_html(elem: HtmlAstElem) -> proc_macro2::TokenStream {
             let children = children.into_iter().map(generate_html).collect::<Vec<_>>();
             quote! {
                 {
-                    (::nakssg::ToHtml::to_html(#name (
-                        {#attributes_list}, |writer: &mut dyn (::nakssg::HtmlWriter)| {
+                    (::trowel::ToHtml::to_html(#name (
+                        {#attributes_list}, |writer: &mut dyn (::trowel::HtmlWriter)| {
                             #(#children);*
                         }
                     ), writer));

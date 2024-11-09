@@ -1,5 +1,5 @@
-extern crate self as nakssg;
-pub use nakssg_macro::nakssg_html;
+extern crate self as trowel;
+pub use trowel_macro::trowel_html;
 pub mod html;
 pub mod util;
 pub use html::{HtmlWriter, ToHtml};

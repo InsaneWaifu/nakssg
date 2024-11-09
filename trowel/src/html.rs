@@ -12,8 +12,6 @@ pub trait ToHtml {
     fn to_html(self, writer: &mut dyn HtmlWriter);
 }
 
-pub struct FnMarker();
-
 impl<F: FnOnce(&mut dyn crate::HtmlWriter)> ToHtml for F {
     fn to_html(self, writer: &mut dyn HtmlWriter) {
         self(writer)

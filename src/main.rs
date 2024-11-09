@@ -7,8 +7,9 @@ use blog::BlogPageBase;
 use chrono::{DateTime, FixedOffset};
 use clap::{Parser, Subcommand};
 use comrak::Options;
-use nakssg::{nakssg_html, util::html_to_string};
+use trowel::{trowel_html, util::html_to_string};
 mod blog;
+
 
 #[derive(Debug)]
 struct Page {
@@ -76,7 +77,7 @@ struct Command {
 enum Subcommands {
     Build {
         #[arg(short, long, default_value = "dist")]
-        output_dir: String,
+        output_dir: String
     },
     New {
         slug_name: String,
@@ -114,13 +115,13 @@ impl Command {
                     .collect::<Vec<_>>();
 
                 let pages2 = &pages;
-                let index = html_to_string(nakssg_html! {
+                let index = html_to_string(trowel_html! {
                     !{let pages = pages2;},
                     !BlogPageBase(title: {Some("Blog")}) {
                         ul(style: "list-style-type:none;") {
                             {
                                 pages.iter().map(|page| {
-                                    Box::new(nakssg_html!(
+                                    Box::new(trowel_html!(
                                         li {
                                             a(href: {Some(format!("/{}", page.slug))}) {
                                                 {page.title.as_str()},
@@ -132,8 +133,8 @@ impl Command {
                                                 }
                                             }
                                         }
-                                    )) as Box<dyn Fn(&mut dyn nakssg::HtmlWriter)>
-                                }).collect::<Vec<Box<dyn Fn(&mut dyn nakssg::HtmlWriter)>>>()
+                                    )) as Box<dyn Fn(&mut dyn trowel::HtmlWriter)>
+                                }).collect::<Vec<Box<dyn Fn(&mut dyn trowel::HtmlWriter)>>>()
                             }
                         }
                     }
@@ -141,7 +142,7 @@ impl Command {
                 std::fs::write(output_dir.join("index.html"), index).unwrap();
 
                 for page in pages {
-                    let html = html_to_string(nakssg_html! {
+                    let html = html_to_string(trowel_html! {
                         !BlogPageBase(title: {Some(&page.title)}, timestamp: {Some(page.timestamp.to_rfc2822())}) {
                             {page.body.as_str()}
                         }
