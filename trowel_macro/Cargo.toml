@@ -2,6 +2,9 @@
 name = "trowel_macro"
 version = "0.1.1"
 edition = "2021"
+license = "MIT"
+description = "A macro for writing HTML in Rust"
+repository = "https://github.com/InsaneWaifu/nakssg"
 
 [dependencies]
 proc-macro2 = "1.0.89"

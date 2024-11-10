@@ -1,9 +1,7 @@
-use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{
     braced, bracketed, parenthesized,
-    parse::{self, Parse, Parser},
-    parse2,
+    parse::{self, Parse},
     punctuated::Punctuated,
     spanned::Spanned,
     token::Brace,
